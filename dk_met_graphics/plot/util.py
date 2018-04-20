@@ -131,7 +131,8 @@ def add_timestamp(ax, time=None, x=0.99, y=-0.04, ha='right',
     return ax.text(x, y, timestr, ha=ha, transform=ax.transAxes, **text_args)
 
 
-def add_model_title(title, initial_time, model='', fhour=0, fontsize=20):
+def add_model_title(title, initial_time, model='',
+                    fhour=0, fontsize=20, multilines=False, atime=0):
     """
     Add the title information to the plot.
 
@@ -140,20 +141,34 @@ def add_model_title(title, initial_time, model='', fhour=0, fontsize=20):
     :param model: model name.
     :param fhour: forecast hour.
     :param fontsize: font size.
+    :param multilines: multilines for title.
+    :param atime: accumulating time.
     :return: None.
     """
     if isinstance(initial_time, np.datetime64):
         initial_time = pd.to_datetime(
             str(initial_time)).replace(tzinfo=None).to_pydatetime()
     valid_time = initial_time + timedelta(hours=fhour)
-    initial_str = initial_time.strftime("Initial: %Y-%m-%dT%H")
+    initial_str = initial_time.strftime("Initial: %Y/%m/%dT%H")
     fhour_str = "FHour: {:03d}".format(fhour)
-    valid_str = valid_time.strftime('Valid: %m-%dT%H')
-    time_str = initial_str + '\n' + fhour_str + '; ' + valid_str
-    if model != '':
-        title = '[' + model + '] ' + title
-    plt.title(title, loc='left', fontsize=fontsize)
-    plt.title(time_str, loc='right', fontsize=fontsize-2)
+    if atime == 0:
+        valid_str = valid_time.strftime('Valid: %m/%dT%H')
+    else:
+        valid_str = (
+            (valid_time-timedelta(hours=atime)).strftime('Valid: %m/%dT%H') +
+            valid_time.strftime(' to %dT%H'))
+    if multilines:
+        title = title + '\n' + initial_str + ' ' + \
+            fhour_str + 'h; ' + valid_str
+        if model != '':
+            title = '[' + model + '] ' + title
+        plt.title(title, loc='left', fontsize=fontsize)
+    else:
+        time_str = initial_str + '\n' + fhour_str + 'h; ' + valid_str
+        if model != '':
+            title = '[' + model + '] ' + title
+        plt.title(title, loc='left', fontsize=fontsize)
+        plt.title(time_str, loc='right', fontsize=fontsize-2)
 
 
 def center_colorbar(cb):
