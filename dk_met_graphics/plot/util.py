@@ -11,10 +11,10 @@ import pkg_resources
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as mpatheffects
 import matplotlib.ticker as mticker
-from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
 
 def add_gridlines(ax, draw_labels=True, linewidth=2, color='gray', alpha=0.5,
@@ -169,6 +169,35 @@ def add_model_title(title, initial_time, model='',
             title = '[' + model + '] ' + title
         plt.title(title, loc='left', fontsize=fontsize)
         plt.title(time_str, loc='right', fontsize=fontsize-2)
+
+
+def get_model_time_stamp(initial_time, fhour=0, atime=0):
+    """
+    Construct the time information string.
+    Return inital time string like "Initial: 2018/08/20T08"
+           forecast hour like "FHour: 024"
+           forecast valid time "Valid: 08/20T08"
+    
+    Arguments:
+        initial_time {[type]} -- model initial time.
+    
+    Keyword Arguments:
+        fhour {int} -- forecast hour (default: {0})
+        atime {int} -- accumulated time (default: {0})
+    """
+    if isinstance(initial_time, np.datetime64):
+        initial_time = pd.to_datetime(
+            str(initial_time)).replace(tzinfo=None).to_pydatetime()
+    valid_time = initial_time + timedelta(hours=fhour)
+    initial_str = initial_time.strftime("Initial: %Y/%m/%dT%H")
+    fhour_str = "FHour: {:03d}".format(fhour)
+    if atime == 0:
+        valid_str = valid_time.strftime('Valid: %m/%dT%H')
+    else:
+        valid_str = (
+            (valid_time-timedelta(hours=atime)).strftime('Valid: %m/%dT%H') +
+            valid_time.strftime(' to %dT%H'))
+    return initial_str, fhour_str, valid_str
 
 
 def center_colorbar(cb):
@@ -342,3 +371,28 @@ def sorted_legend_handles_labels(ax=None, key=None, reverse=True):
                           ax.get_legend_handles_labels()[0]],
                          *ax.get_legend_handles_labels()),
                      reverse=reverse)))
+
+
+def add_titlebox(ax, text, x=0.05, y=0.9, alignment='left', fontsize=12.5):
+    """
+    add title text box.
+    
+    Arguments:
+        ax {`matplotlib.axes.Axes`} -- the `Axes` instance used for plotting.
+        text {string} -- title text
+    
+    Keyword Arguments:
+        x {float} -- title x position (default: {0.05})
+        y {float} -- title y position (default: {0.9})
+        alignment {str} -- horizontal alignment (default: {'left'})
+        fontsize {float} -- text font size (default: {12.5})
+    
+    Returns:
+        `matplotlib.axes.Axes` -- the `Axes` instance used for plotting.
+    """
+
+    ax.text(
+        x, y, text, horizontalalignment=alignment, transform=ax.transAxes,
+        bbox=dict(facecolor='white'), fontsize=fontsize)
+
+    return ax

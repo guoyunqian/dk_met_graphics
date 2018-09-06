@@ -49,6 +49,7 @@ def make_cmap(incolors, position=None, rgb=False, hex=False):
     if position is None:
         position = np.linspace(0, 1, len(incolors))
     else:
+        position = np.array(position)
         if len(position) != len(incolors):
             sys.exit("position length must be the same as colors")
 
@@ -67,8 +68,8 @@ def make_cmap(incolors, position=None, rgb=False, hex=False):
         bit_rgb = np.linspace(0, 1, 256)
         for i in range(len(incolors)):
             _colors.append((bit_rgb[incolors[i][0]],
-                           bit_rgb[incolors[i][1]],
-                           bit_rgb[incolors[i][2]]))
+                            bit_rgb[incolors[i][1]],
+                            bit_rgb[incolors[i][2]]))
 
     cdict = {'red': [], 'green': [], 'blue': []}
     for pos, color in zip(positions, _colors):
