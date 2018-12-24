@@ -36,17 +36,22 @@ def cm_precipitation_metpy():
     return mpl.colors.ListedColormap(colors, 'precipitation')
 
 
-def cm_precipitation_nws(clevs=None):
+def cm_precipitation_nws(atime=24):
     """
     http://jjhelmus.github.io/blog/2013/09/17/plotting-nsw-precipitation-data/
 
-    :param clevs: levels, must be increasing order array with 15 length.
+    :param atime: accumulative time period.
     :return: colormap function, normalization boundary.
     """
-    
-    if clevs is None:
-        clevs = [0.1, 2.5, 5, 10, 15, 20, 25,
-                 30, 40, 50, 75, 100, 150, 200, 250]
+
+    if atime == 1:
+        clevs = [0.01, 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100]
+    elif atime == 3:
+        clevs = [0.01, 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100]
+    elif atime == 6:
+        clevs = [0.01, 1, 3, 5, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120]
+    else:
+        clevs = [0.1, 2.5, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 250]
     colors = ["#04e9e7", "#019ff4", "#0300f4", "#02fd02",
               "#01c501", "#008e00", "#fdf802", "#e5bc00",
               "#fd9500", "#fd0000", "#d40000", "#bc0000",
@@ -79,6 +84,51 @@ def cm_rain_nws(atime=24, pos=None):
             _pos = [0.1, 2, 7, 13, 30, 60]
     else:
         _pos = pos
+    cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
+    return cmap, norm
+
+
+def cm_qpf_nws(atime=24, pos=None):
+    """
+    Quantitative Precipitation Forecasts color map.
+
+    Keyword Arguments:
+        atime {int} -- [description] (default: {24})
+        pos {[type]} -- specify the color position (default: {None})
+    """
+
+    # set colors
+    _colors = ["#FFFFFF", "#BABABA", "#A6A1A1", "#7E7E7E", "#6C6C6C",
+               "#B2F8B0", "#94F397", "#56EE6C", "#2EB045", "#249C3B", 
+               "#2562C6", "#347EE4", "#54A1EB", "#94CEF4", "#B2EEF6", 
+               "#FDF8B2", "#FDE688", "#FDBC5C", "#FD9E42", "#FB6234",
+               "#FB3D2D", "#DD2826", "#BA1B21", "#9F1A1D", "#821519",
+               "#624038", "#88645C", "#B08880", "#C49C94", "#F0DAD1",
+               "#CBC4D9", "#A99CC1", "#9687B6", "#715C99", "#65538B",
+               "#73146F", "#881682", "#AA19A4", "#BB1BB5", "#C61CC0",
+               "#D71ECF"]
+
+    # set precipitation accumultated time
+    if pos is None:
+        if atime == 24:
+            _pos = np.concatenate((
+                np.array([0, 0.1, 0.5, 1]), np.arange(2.5, 25, 2.5),
+                np.arange(25, 50, 5), np.arange(50, 150, 10),
+                np.arange(150, 475, 25)))
+        elif atime == 6:
+            _pos = np.concatenate(
+                (np.array([0, 0.1, 0.5]), np.arange(1, 4, 1),
+                 np.arange(4, 13, 1.5), np.arange(13, 25, 2),
+                 np.arange(25, 60, 2.5), np.arange(60, 105, 5)))
+        else:
+            _pos = np.concatenate(
+                (np.array([0, 0.01, 0.1]), np.arange(0.5, 2, 0.5),
+                 np.arange(2, 8, 1), np.arange(8, 20, 2),
+                 np.arange(20, 55, 2.5), np.arange(55, 100, 5)))
+    else:
+        _pos = pos
+
+    # construct color map and normalized boundary
     cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
     return cmap, norm
 
@@ -154,51 +204,6 @@ def cm_precipitation_type_nws(pos=None):
         _pos = [0, 1, 3, 5, 6, 7, 8]
     else:
         _pos = pos
-    cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
-    return cmap, norm
-
-
-def cm_qpf_nws(atime=24, pos=None):
-    """
-    Quantitative Precipitation Forecasts color map.
-
-    Keyword Arguments:
-        atime {int} -- [description] (default: {24})
-        pos {[type]} -- specify the color position (default: {None})
-    """
-
-    # set colors
-    _colors = ["#FFFFFF", "#BABABA", "#A6A1A1", "#7E7E7E", "#6C6C6C",
-               "#B2F8B0", "#94F397", "#56EE6C", "#2EB045", "#249C3B", 
-               "#2562C6", "#347EE4", "#54A1EB", "#94CEF4", "#B2EEF6", 
-               "#FDF8B2", "#FDE688", "#FDBC5C", "#FD9E42", "#FB6234",
-               "#FB3D2D", "#DD2826", "#BA1B21", "#9F1A1D", "#821519",
-               "#624038", "#88645C", "#B08880", "#C49C94", "#F0DAD1",
-               "#CBC4D9", "#A99CC1", "#9687B6", "#715C99", "#65538B",
-               "#73146F", "#881682", "#AA19A4", "#BB1BB5", "#C61CC0",
-               "#D71ECF"]
-
-    # set precipitation accumultated time
-    if pos is None:
-        if atime == 24:
-            _pos = np.concatenate((
-                np.array([0, 0.1, 0.5, 1]), np.arange(2.5, 25, 2.5),
-                np.arange(25, 50, 5), np.arange(50, 150, 10),
-                np.arange(150, 475, 25)))
-        elif atime == 6:
-            _pos = np.concatenate(
-                (np.array([0, 0.1, 0.5]), np.arange(1, 4, 1),
-                 np.arange(4, 13, 1.5), np.arange(13, 25, 2),
-                 np.arange(25, 60, 2.5), np.arange(60, 105, 5)))
-        else:
-            _pos = np.concatenate(
-                (np.array([0, 0.01, 0.1]), np.arange(0.5, 2, 0.5),
-                 np.arange(2, 8, 1), np.arange(8, 20, 2),
-                 np.arange(20, 55, 2.5), np.arange(55, 100, 5)))
-    else:
-        _pos = pos
-
-    # construct color map and normalized boundary
     cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
     return cmap, norm
 

@@ -23,7 +23,7 @@ def draw_precipitation_nws(ax, prep, map_extent=(73, 136, 17, 54),
     :param ax: `matplotlib.axes.Axes`, the `Axes` instance used for plotting.
     :param prep: precipitation, dictionary:
                  {'lon': 1D array, 'lat': 1D array, 'data': 2D array}
-    :param map_extent: [lonmin, lonmax, latmin, latmax],
+    :param map_extent: (lonmin, lonmax, latmin, latmax),
                        longitude and latitude range.
     :param gridlines: bool, draw grid lines or not.
     :return: plots dictionary.

@@ -1,5 +1,5 @@
-include README.rst
-include LICENSE.txt
+include README.md
+include LICENSE
 recursive-include dk_met_graphics/resources *
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc
