@@ -133,6 +133,113 @@ def cm_qpf_nws(atime=24, pos=None):
     return cmap, norm
 
 
+def cm_precip():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    Range of values:
+        metric: 0 to 762 millimeters
+        english: 0 to 30 inches
+    """
+    # The amount of precipitation in inches
+    a = [0,.01,.1,.25,.5,1,1.5,2,3,4,6,8,10,15,20,30]
+
+    # Normalize the bin between 0 and 1 (uneven bins are important here)
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[255,255,255], [199,233,192], [161,217,155], [116,196,118], [49,163,83], 
+        [0,109,44], [255,250,138], [255,204,79], [254,141,60], [252,78,42], 
+        [214,26,28], [173,0,38], [112,0,38], [59,0,48], [76,0,115], [255,219,255]])
+
+    # Create a tuple for every color indicating the normalized 
+    # position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, np.array(C[i])/255.))
+
+    # Create the colormap
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("precipitation", COLORS)
+
+    return cmap
+
+
+def cm_precip1():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """
+
+    precip_cdict ={
+        'red':    ((0.000, 1.000, 1.000),
+                (0.004, 0.914, 0.914),
+                (0.012, 0.812, 0.812),
+                (0.020, 0.514, 0.514),
+                (0.040, 0.227, 0.227),
+                (0.060, 0.114, 0.114),
+                (0.080, 0.000, 0.000),
+                (0.100, 0.012, 0.012),
+                (0.120, 0.020, 0.020),
+                (0.160, 0.031, 0.031),
+                (0.200, 0.518, 0.518),
+                (0.240, 1.000, 1.000),
+                (0.280, 1.000, 1.000),
+                (0.320, 1.000, 1.000),
+                (0.360, 1.000, 1.000),
+                (0.400, 0.702, 0.702),
+                (0.500, 0.490, 0.490),
+                (0.600, 0.294, 0.294),
+                (0.700, 0.196, 0.196),
+                (0.800, 0.980, 0.980),
+                (1.000, 1.000, 1.000)),
+        'green':    ((0.000, 1.000, 0.000),
+                (0.004, 0.800, 0.800),
+                (0.012, 0.502, 0.502),
+                (0.020, 0.200, 0.200),
+                (0.040, 0.000, 0.000),
+                (0.060, 0.000, 0.000),
+                (0.080, 0.000, 0.000),
+                (0.100, 0.235, 0.235),
+                (0.120, 0.467, 0.467),
+                (0.160, 0.702, 0.702),
+                (0.200, 0.851, 0.851),
+                (0.240, 1.000, 1.000),
+                (0.280, 0.667, 0.667),
+                (0.320, 0.227, 0.227),
+                (0.360, 0.000, 0.000),
+                (0.400, 0.000, 0.000),
+                (0.500, 0.000, 0.000),
+                (0.600, 0.000, 0.000),
+                (0.700, 0.000, 0.000),
+                (0.800, 0.773, 0.773),
+                (1.000, 1.000, 1.000)),
+        'blue':        ((0.000, 1.000, 1.000),
+                (0.004, 0.976, 0.976),
+                (0.012, 0.875, 0.875),
+                (0.020, 0.576, 0.576),
+                (0.040, 0.690, 0.690),
+                (0.060, 0.843, 0.843),
+                (0.080, 1.000, 1.000),
+                (0.100, 0.686, 0.686),
+                (0.120, 0.372, 0.372),
+                (0.160, 0.059, 0.059),
+                (0.200, 0.031, 0.031),
+                (0.240, 0.000, 0.000),
+                (0.280, 0.000, 0.000),
+                (0.320, 0.000, 0.000),
+                (0.360, 0.000, 0.000),
+                (0.400, 0.000, 0.000),
+                (0.500, 0.000, 0.000),
+                (0.600, 0.000, 0.000),
+                (0.700, 0.000, 0.000),
+                (0.800, 0.980, 0.980),
+                (1.000, 1.000, 1.000))}
+    precip_coltbl = mpl.colors.LinearSegmentedColormap('PRECIP_COLTBL',precip_cdict)
+    return precip_coltbl
+
+
 def cm_sleet_nws(atime=24, pos=None):
     """
     Sleet color map.
@@ -187,6 +294,68 @@ def cm_snow_nws(atime=24, pos=None):
         _pos = pos
     cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
     return cmap, norm
+
+
+def cm_snow2():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """
+
+    snowf_cdict ={
+        'red':  ((0.00, 0.91, 0.91),
+                (0.06, 0.81, 0.81),
+                (0.12, 0.51, 0.51),
+                (0.18, 0.23, 0.23),
+                (0.24, 0.11, 0.11),
+                (0.30, 0.00, 0.00),
+                (0.36, 0.02, 0.02),
+                (0.42, 0.02, 0.02),
+                (0.48, 0.03, 0.03),
+                (0.54, 0.52, 0.52),
+                (0.60, 1.00, 1.00),
+                (0.66, 1.00, 1.00),
+                (0.72, 1.00, 1.00),
+                (0.78, 1.00, 1.00),
+                (0.84, 0.70, 0.70),
+                (0.90, 0.40, 0.40),
+                (1.00, 0.20, 0.20)),
+        'green':((0.00, 0.80, 0.80),
+                (0.06, 0.50, 0.50),
+                (0.12, 0.20, 0.20),
+                (0.18, 0.00, 0.00),
+                (0.24, 0.00, 0.00),
+                (0.30, 0.00, 0.00),
+                (0.36, 0.24, 0.24),
+                (0.42, 0.47, 0.47),
+                (0.48, 0.70, 0.70),
+                (0.54, 0.85, 0.85),
+                (0.60, 1.00, 1.00),
+                (0.66, 0.67, 0.67),
+                (0.72, 0.33, 0.33),
+                (0.78, 0.00, 0.00),
+                (0.84, 0.00, 0.00),    
+                (0.90, 0.00, 0.00),
+                (1.00, 0.00, 0.00)),
+        'blue': ((0.00, 0.98, 0.98),
+                (0.06, 0.87, 0.87),
+                (0.12, 0.58, 0.58),
+                (0.18, 0.69, 0.69),
+                (0.24, 0.84, 0.84),
+                (0.30, 1.00, 1.00),
+                (0.36, 0.69, 0.69),
+                (0.42, 0.37, 0.37),
+                (0.48, 0.06, 0.06),
+                (0.54, 0.03, 0.03),
+                (0.60, 0.00, 0.00),
+                (0.66, 0.00, 0.00),
+                (0.72, 0.00, 0.00),
+                (0.78, 0.00, 0.00),
+                (0.84, 0.00, 0.00),
+                (0.90, 0.00, 0.00),
+                (1.00, 0.00, 0.00))}
+    snowf_coltbl = mpl.colors.LinearSegmentedColormap('SNOWF_COLTBL',snowf_cdict)
+    return snowf_coltbl
 
 
 def cm_precipitation_type_nws(pos=None):
@@ -330,6 +499,96 @@ def cm_temperature_nws(pos=None):
     return make_cmap(_colors, position=_pos, rgb=True)
 
 
+def cm_temp():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    F: vmax=120, vmin=-60
+    C: vmax=50, vmin=-50
+    """
+    # The range of temperature bins in Fahrenheit
+    a = np.arange(-60,121,5)
+
+    # Bins normalized between 0 and 1
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[145,0,63], [206,18,86], [231,41,138], [223,101,176], [255,115,223], 
+        [255,190,232], [255,255,255], [218,218,235], [188,189,220], 
+        [158,154,200], [117,107,177], [84,39,143], [13,0,125], [13,61,156], 
+        [0,102,194], [41,158,255], [74,199,255], [115,215,255], [173,255,255], 
+        [48,207,194], [0,153,150], [18,87,87], [6,109,44], [49,163,84], 
+        [116,196,118], [161,217,155], [211,255,190], [255,255,179], 
+        [255,237,160], [254,209,118], [254,174,42], [253,141,60], [252,78,42], 
+        [227,26,28], [177,0,38], [128,0,38], [89,0,66], [40,0,40]])/255.
+
+    # Create a tuple for every color indicating the 
+    # normalized position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, C[i]))
+
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("Temperature", COLORS)
+
+    return cmap
+
+
+def cm_sftemp():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """
+
+    sfc_cdict ={
+        'red':    ((0.00, 0.20, 0.20),
+                (0.08, 0.40, 0.40),
+                (0.17, 0.27, 0.27),
+                (0.25, 0.80, 0.80),
+                (0.33, 0.20, 0.20),
+                (0.42, 0.20, 0.20),
+                (0.50, 0.00, 0.00),
+                (0.58, 0.99, 0.99),
+                (0.67, 1.00, 1.00),
+                (0.75, 0.82, 0.82),
+                (0.83, 0.53, 0.53),
+                (0.92, 0.95, 0.95),
+                (1.00, 1.00, 1.00)),
+
+        'green':    ((0.00, 0.20, 0.20),
+                (0.08, 0.40, 0.40),
+                (0.17, 0.00, 0.00),
+                (0.25, 0.60, 0.60),
+                (0.33, 0.40, 0.40),
+                (0.42, 0.60, 0.60),
+                (0.50, 0.39, 0.39),
+                (0.58, 0.76, 0.76),
+                (0.67, 0.36, 0.36),
+                (0.75, 0.02, 0.02),
+                (0.83, 0.00, 0.00),
+                (0.92, 0.03, 0.03),
+                (1.00, 0.60, 0.60)),
+
+        'blue':        ((0.00, 0.60, 0.60),
+                (0.08, 0.60, 0.60),
+                (0.17, 0.65, 0.65),
+                (0.25, 1.00, 1.00),
+                (0.33, 1.00, 1.00),
+                (0.42, 0.40, 0.40),
+                (0.50, 0.07, 0.07),
+                (0.58, 0.02, 0.02),
+                (0.67, 0.00, 0.00),
+                (0.75, 0.01, 0.01),
+                (0.83, 0.00, 0.00),
+                (0.92, 0.52, 0.52),
+                (1.00, 0.80, 0.80))}
+
+     
+    sfc_coltbl = mpl.colors.LinearSegmentedColormap('SFC_COLTBL',sfc_cdict)
+    return sfc_coltbl 
+
+
 def cm_temperature_trend_nws(pos=None):
     """
     Construct temperature trend color map.
@@ -365,6 +624,112 @@ def cm_temperature_trend_nws(pos=None):
     return cmap, norm
 
 
+def cm_thetae():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """
+
+    thte_cdict ={
+        'red': ((0.00, 0.20, 0.20),
+                (0.08, 0.40, 0.40),
+                (0.17, 0.27, 0.27),
+                (0.25, 0.80, 0.80),
+                (0.33, 0.20, 0.20),
+                (0.42, 0.20, 0.20),
+                (0.50, 0.00, 0.00),
+                (0.58, 0.99, 0.99),
+                (0.67, 1.00, 1.00),
+                (0.75, 0.82, 0.82),
+                (0.83, 0.53, 0.53),
+                (0.92, 0.95, 0.95),
+                (1.00, 1.00, 1.00)),
+
+        'green':((0.00, 0.20, 0.20),
+                (0.08, 0.40, 0.40),
+                (0.17, 0.00, 0.00),
+                (0.25, 0.60, 0.60),
+                (0.33, 0.40, 0.40),
+                (0.42, 0.60, 0.60),
+                (0.50, 0.39, 0.39),
+                (0.58, 0.76, 0.76),
+                (0.67, 0.36, 0.36),
+                (0.75, 0.02, 0.02),
+                (0.83, 0.00, 0.00),
+                (0.92, 0.03, 0.03),
+                (1.00, 0.60, 0.60)),
+
+        'blue': ((0.00, 0.60, 0.60),
+                (0.08, 0.60, 0.60),
+                (0.17, 0.65, 0.65),
+                (0.25, 1.00, 1.00),
+                (0.33, 1.00, 1.00),
+                (0.42, 0.40, 0.40),
+                (0.50, 0.07, 0.07),
+                (0.58, 0.02, 0.02),
+                (0.67, 0.00, 0.00),
+                (0.75, 0.01, 0.01),
+                (0.83, 0.00, 0.00),
+                (0.92, 0.52, 0.52),
+                (1.00, 0.80, 0.80))}
+
+    thte_coltbl = mpl.colors.LinearSegmentedColormap('THTE_COLTBL',thte_cdict)
+    return thte_coltbl
+
+
+def cm_irsat():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """
+
+    irsat_cdict ={
+        'red':    ((0.000, 1.000, 0.294),
+                (0.067, 1.000, 1.000),
+                (0.133, 0.804, 0.804),
+                (0.200, 0.369, 0.369),
+                (0.267, 0.627, 0.627),
+                (0.333, 0.804, 0.804),
+                (0.400, 1.000, 1.000),
+                (0.567, 0.000, 0.000),
+                (0.667, 0.400, 0.400),
+                (0.700, 0.596, 0.596),
+                (0.800, 0.000, 0.000),
+                (0.867, 0.416, 0.416),
+                (0.933, 0.804, 0.804),
+                (1.000, 0.294, 0.294)),
+        'green':    ((0.000, 1.000, 0.000),
+                (0.067, 0.000, 0.000),
+                (0.133, 0.361, 0.361),
+                (0.200, 0.149, 0.149),
+                (0.267, 0.322, 0.322),
+                (0.333, 0.584, 0.584),
+                (0.400, 0.757, 0.757),
+                (0.567, 0.392, 0.392),
+                (0.667, 0.804, 0.804),
+                (0.700, 0.961, 0.961),
+                (0.800, 0.000, 0.000),
+                (0.867, 0.353, 0.353),
+                (0.933, 0.000, 0.000),
+                (1.000, 0.000, 0.000)),
+        'blue':        ((0.000, 1.000, 1.000),
+                (0.067, 0.000, 0.000),
+                (0.133, 0.360, 0.360),
+                (0.200, 0.070, 0.070),
+                (0.267, 0.176, 0.176),
+                (0.333, 0.047, 0.047),
+                (0.400, 0.145, 0.145),
+                (0.567, 0.000, 0.000),
+                (0.667, 0.667, 0.667),
+                (0.700, 1.000, 1.000),
+                (0.800, 0.502, 0.502),
+                (0.867, 0.804, 0.804),
+                (0.933, 0.804, 0.804),
+                (1.000, 0.510, 0.510))}
+    irsat_coltbl = mpl.colors.LinearSegmentedColormap('IRSAT_COLTBL',irsat_cdict)
+    return irsat_coltbl
+
+
 def cm_wind_speed_nws(pos=None):
     """
     Construct 10m wind speed color maps.
@@ -383,6 +748,184 @@ def cm_wind_speed_nws(pos=None):
     else:
         _pos = pos
     return make_cmap(_colors, position=_pos, rgb=True)
+
+
+def cm_wind():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    MPH: vmin=0, vmax=140
+    m/s: vmin=0, vmax=60
+    """
+    # The wind speed bins in miles per hour (MPH)
+    a = [0,5,10,15,20,25,30,35,40,45,50,60,70,80,100,120,140]
+
+    # Normalize the bin between 0 and 1 (uneven bins are important here)
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[16,63,120], [34,94,168], [29,145,192], [65,182,196], [127,205,187], 
+        [180,215,158], [223,255,158], [255,255,166], [255,232,115], 
+        [255,196,0], [255,170,0], [255,89,0], [255,0,0], [168,0,0], [110,0,0], 
+        [255,190,232], [255,115,223]])
+
+    # Create a tuple for every color indicating the normalized 
+    # position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, np.array(C[i])/255.))
+
+    # Create the colormap
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("wind", COLORS)
+
+    return cmap
+
+
+def cm_high_wind_speed_nws(start=6, step=1.5, pos=None):
+    """
+    Construct high wind speed color map (32 colors).
+    
+    Keyword Arguments:
+        start {int} -- start value (default: {24})
+        step {int} -- step value (default: {2})
+        pos {numpy array} -- specify the color position (default: {None})
+            like pos = np.concatenate((np.arange(4,22,1), np.arange(22,38,2),
+                                       np.arange(38,62,4)))  # 925
+                 pos = np.concatenate((np.arange(6,24,1), np.arange(24,40,2),
+                                       np.arange(40,64,4)))  # 850
+                 pos = np.concatenate((np.arange(8,26,1), np.arange(26,42,2),
+                                       np.arange(42,68,4)))  # 700
+                 pos = np.concatenate((np.arange(18,36,1), np.arange(36,50,2),
+                                       np.arange(50,85,5)))  # 500
+                 pos = np.concatenate((np.arange(24,48,2),
+                                       np.arange(48,128,4)))  # 200
+    
+    Returns:
+        matplotlib.colors.ListedColormap -- color map.
+    """
+
+    _colors = [
+        '#DEEBF7', '#B7EBFA', '#91D1F5', '#52A2EF', '#2F80E2',
+        '#1F61D0', '#41AB5D', '#3ECE4D', '#54EE60', '#76F678',
+        '#B4F8B1', '#C6FDBC', '#FDF6B2', '#FDE687', '#F7BD50',
+        '#FC6123', '#FB5E24', '#F73A1E', '#E21D19', '#C11015',
+        '#9D0E11', '#633B33', '#785144', '#8C645A', '#B48A82',
+        '#DFBDB5', '#F1DBD4', '#FDC4C5', '#F0A1A4', '#E67F81',
+        '#DB6464', '#D75052']
+    if pos is not None:
+        _pos = pos
+    else:
+        _pos = np.arange(len(_colors)) * step + start
+
+    # construct color map and normalized boundary
+    cmap, norm = mpl.colors.from_levels_and_colors(
+        
+        _pos, _colors, extend='max')
+    return cmap, norm
+
+
+def cm_gust():
+    """"
+    Suggested ranges: vmin=0, vmax=35 [m/s]
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/my_cmap.py
+
+    """
+    num_sections = 4
+    sections = np.linspace(0, 1, num_sections)
+    cdict = {'red': ((sections[0], 1.0, 1.0),
+                    (sections[1], 75/256., 75/256.),
+                    (sections[2], 134/256., 134/256.),
+                    (sections[3], 184/256., 184/256.)),
+            'green': ((sections[0], 1.0, 1.0),
+                    (sections[1], 132/256., 132/256.),
+                    (sections[2], 1/256., 1/256.),
+                    (sections[3], 134/256., 134/256.)),
+            'blue': ((sections[0], 1.0, 1.0),
+                    (sections[1], 181/256., 181/256.),
+                    (sections[2], 124/256., 124/256.),
+                    (sections[3], 11/256., 11/256.))}
+    cmap_gusts = mpl.colors.LinearSegmentedColormap('gust_colormap_COD', cdict, 256)
+    return cmap_gusts
+
+
+def cm_dewpoint1():
+    """
+    generate maps from wrfout netCDF files
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/LukeM_colormap.py
+    """ 
+
+    dwp_cdict ={
+        'red':    ((0.00, 0.60, 0.60),
+                (0.35, 0.70, 0.70),
+                (0.40, 0.80, 0.80),
+                (0.45, 0.90, 0.90),
+                (0.50, 1.00, 1.00),
+                (0.55, 0.90, 0.90),
+                (0.60, 0.76, 0.76),
+                (0.70, 0.64, 0.64),
+                (0.75, 0.52, 0.52),
+                (0.85, 0.42, 0.42),
+                (1.00, 0.32, 0.32)),
+        'green':    ((0.00, 0.33, 0.33),
+                (0.35, 0.44, 0.44),
+                (0.40, 0.56, 0.56),
+                (0.45, 0.69, 0.69),
+                (0.50, 0.85, 0.85),
+                (0.55, 1.00, 1.00),
+                (0.60, 0.90, 0.90),
+                (0.70, 0.80, 0.80),
+                (0.75, 0.70, 0.70),
+                (0.85, 0.60, 0.60),
+                (1.00, 0.50, 0.50)),
+        'blue':        ((0.00, 0.06, 0.06),
+                (0.35, 0.17, 0.17),
+                (0.40, 0.32, 0.32),
+                (0.45, 0.49, 0.49),
+                (0.50, 0.70, 0.70),
+                (0.55, 0.70, 0.70),
+                (0.60, 0.49, 0.49),
+                (0.70, 0.32, 0.32),
+                (0.75, 0.17, 0.17),
+                (0.85, 0.06, 0.06),
+                (1.00, 0.05, 0.05))}
+     
+    dwp_coltbl = mpl.colors.LinearSegmentedColormap('DWP_COLTBL',dwp_cdict)
+    return dwp_coltbl 
+
+
+def cm_dpt():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    Range of values:
+        Celsius: -18 to 27 C
+        Fahrenheit: 0 to 80 F
+    """
+    # The dew point temperature bins in Celsius (C)
+    a = np.array([0,10,20,30,40,45,50,55,60,65,70,75,80])
+
+    # Normalize the bin between 0 and 1 (uneven bins are important here)
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[59,34,4], [84,48,5], [140,82,10], [191,129,45], [204,168,84], 
+        [223,194,125], [230,217,181], [211,235,231], [169,219,211], 
+        [114,184,173], [49,140,133], [1,102,95], [0,60,48], [0,41,33]])
+
+    # Create a tuple for every color indicating the 
+    # normalized position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, np.array(C[i])/255.))
+
+    # Create the colormap
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("dewpoint", COLORS)
+
+    return cmap
 
 
 def cm_relative_humidity_nws(pos=None):
@@ -410,6 +953,38 @@ def cm_relative_humidity_nws(pos=None):
     return cmap, norm
 
 
+def cm_rh():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    Range of values:
+        5 to 90 %
+    """
+    # The relative humidity bins in percent (%)
+    a = [5,10,15,20,25,30,35,40,50,60,70,80,90]
+
+    # Normalize the bin between 0 and 1 (uneven bins are important here)
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[145,0,34], [166,17,34], [189,46,36], [212,78,51], [227,109,66], 
+        [250,143,67], [252,173,88], [254,216,132], [255,242,170], 
+        [230,244,157], [188,227,120], [113,181,92], [38,145,75], [0,87,46]])
+
+    # Create a tuple for every color indicating the normalized 
+    # position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, np.array(C[i])/255.))
+
+    # Create the colormap
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("rh", COLORS)
+
+    return cmap
+
+
 def cm_cloud_cover_nws(pos=None):
     """
     Construct total cloud cover color maps.
@@ -425,6 +1000,38 @@ def cm_cloud_cover_nws(pos=None):
         _pos = pos
 
     return make_cmap(_colors, position=_pos, hex=True)
+
+
+def cm_sky():
+    """
+    Standardized colormaps from National Weather Service
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/NWS_standard_cmap.py
+
+    Range of Values:
+        0 to 90 %
+    """
+    # The sky covered by clouds in percent (%)
+    a = range(0,91,10)
+
+    # Normalize the bin between 0 and 1 (uneven bins are important here)
+    norm = [(float(i)-min(a))/(max(a)-min(a)) for i in a]
+
+    # Color tuple for every bin
+    C = np.array(
+        [[36, 160, 242], [78, 176, 242], [128, 183, 248], [160, 200, 255], 
+        [210, 225, 255], [225, 225, 225], [201, 201, 201], [165, 165, 165], 
+        [110, 110, 110], [80, 80, 80]])
+
+    # Create a tuple for every color indicating the normalized 
+    # position on the colormap and the assigned color.
+    COLORS = []
+    for i, n in enumerate(norm):
+        COLORS.append((n, np.array(C[i])/255.))
+
+    # Create the colormap
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("cloudcover", COLORS)
+
+    return cmap
 
 
 def cm_visibility_nws(pos=None):
@@ -507,49 +1114,6 @@ def cm_height_nws(start=488, step=2.5, pos=None):
 
     # construct color map and normalized boundary
     cmap, norm = mpl.colors.from_levels_and_colors(
-        _pos, _colors, extend='max')
-    return cmap, norm
-
-
-def cm_high_wind_speed_nws(start=6, step=1.5, pos=None):
-    """
-    Construct high wind speed color map (32 colors).
-    
-    Keyword Arguments:
-        start {int} -- start value (default: {24})
-        step {int} -- step value (default: {2})
-        pos {numpy array} -- specify the color position (default: {None})
-            like pos = np.concatenate((np.arange(4,22,1), np.arange(22,38,2),
-                                       np.arange(38,62,4)))  # 925
-                 pos = np.concatenate((np.arange(6,24,1), np.arange(24,40,2),
-                                       np.arange(40,64,4)))  # 850
-                 pos = np.concatenate((np.arange(8,26,1), np.arange(26,42,2),
-                                       np.arange(42,68,4)))  # 700
-                 pos = np.concatenate((np.arange(18,36,1), np.arange(36,50,2),
-                                       np.arange(50,85,5)))  # 500
-                 pos = np.concatenate((np.arange(24,48,2),
-                                       np.arange(48,128,4)))  # 200
-    
-    Returns:
-        matplotlib.colors.ListedColormap -- color map.
-    """
-
-    _colors = [
-        '#DEEBF7', '#B7EBFA', '#91D1F5', '#52A2EF', '#2F80E2',
-        '#1F61D0', '#41AB5D', '#3ECE4D', '#54EE60', '#76F678',
-        '#B4F8B1', '#C6FDBC', '#FDF6B2', '#FDE687', '#F7BD50',
-        '#FC6123', '#FB5E24', '#F73A1E', '#E21D19', '#C11015',
-        '#9D0E11', '#633B33', '#785144', '#8C645A', '#B48A82',
-        '#DFBDB5', '#F1DBD4', '#FDC4C5', '#F0A1A4', '#E67F81',
-        '#DB6464', '#D75052']
-    if pos is not None:
-        _pos = pos
-    else:
-        _pos = np.arange(len(_colors)) * step + start
-
-    # construct color map and normalized boundary
-    cmap, norm = mpl.colors.from_levels_and_colors(
-        
         _pos, _colors, extend='max')
     return cmap, norm
 
@@ -699,3 +1263,601 @@ def cm_cape_nws(pos=None):
     
     return make_cmap(_colors, position=_pos, hex=True)
 
+
+def cm_terrain_256():
+    """Custom terrain colormap with 256 distinct colors.
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/terrain_colormap.py
+
+    """
+
+    C = np.array([[0, 125, 255], 
+                  [2, 97, 0],  # Alternativley [0, 0, 255], for blue at sealevel
+                  [2, 97, 0], [3, 97, 0], [4, 97, 0], [5, 97, 0], [6, 98, 0], [7, 98, 0], [8, 98, 0], [9, 98, 0],
+                  [10, 98, 0], [11, 98, 0], [11, 99, 0], [12, 99, 0], [13, 99, 0], [14, 99, 0], [15, 99, 0], 
+                  [16, 99, 0], [17, 100, 0], [18, 100, 0], [19, 100, 0], [19, 100, 0],
+                  [20, 100, 0], [21, 101, 0], [22, 101, 0], [23, 101, 0], [24, 101, 0], [25, 101, 0], [26, 102, 0], 
+                  [27, 102, 0], [28, 102, 0], [28, 102, 0], [29, 102, 0], [30, 102, 0], [31, 103, 0], [32, 103, 0], 
+                  [33, 103, 0], [34, 103, 0], [35, 103, 0], [36, 104, 0], [37, 104, 0], [37, 104, 0], [38, 104, 0], 
+                  [39, 104, 0], [40, 104, 0], [41, 105, 0], [42, 105, 0], [43, 105, 0], [44, 105, 0], [45, 105, 0], 
+                  [45, 106, 0], [46, 106, 0], [47, 106, 0], [48, 106, 0], [49, 106, 0], [50, 106, 0], [51, 107, 0], 
+                  [52, 107, 0], [53, 107, 0], [54, 107, 0], [54, 107, 0], [55, 108, 0], [56, 108, 0], [57, 108, 0], 
+                  [58, 108, 0], [59, 108, 0], [60, 108, 1], [61, 109, 1], [62, 109, 2], [63, 109, 2], [64, 109, 3], 
+                  [65, 109, 3], [66, 110, 4], [67, 110, 4], [68, 110, 4], [69, 110, 5], [70, 110, 5], [71, 110, 6], 
+                  [72, 111, 6], [73, 111, 7], [74, 111, 7], [75, 111, 8], [76, 111, 8], [77, 112, 9], [78, 112, 9], 
+                  [79, 112, 10], [80, 112, 10], [81, 112, 11], [82, 112, 11], [83, 113, 12], [84, 113, 12], 
+                  [85, 113, 13], [85, 113, 13], [86, 113, 14], [87, 114, 14], [88, 114, 15], [89, 114, 15], 
+                  [90, 114, 16], [91, 114, 16], [92, 114, 17], [93, 115, 17], [94, 115, 18], [95, 115, 18], 
+                  [96, 115, 19], [97, 115, 19], [98, 115, 20], [99, 116, 20], [100, 116, 20], [101, 116, 21], 
+                  [102, 116, 21], [103, 116, 22], [104, 117, 22], [105, 117, 23], [106, 117, 23], [107, 117, 24], 
+                  [108, 117, 24], [109, 118, 25], [110, 118, 25], [111, 118, 26], [112, 118, 26], [113, 118, 27], 
+                  [114, 118, 27], [115, 119, 28], [116, 119, 28], [117, 119, 29], [118, 119, 29], [119, 119, 30], 
+                  [120, 120, 30], [121, 120, 31], [122, 120, 31], [123, 120, 32], [124, 121, 32], [125, 121, 32], 
+                  [126, 121, 33], [127, 122, 33], [128, 122, 34], [129, 122, 34], [130, 123, 35], [131, 123, 35], 
+                  [132, 123, 36], [133, 124, 36], [134, 124, 37], [135, 124, 37], [136, 125, 37], [137, 125, 38], 
+                  [138, 125, 38], [139, 126, 39], [139, 126, 39], [140, 126, 40], [141, 126, 40], [142, 127, 41], 
+                  [143, 127, 41], [144, 127, 41], [145, 128, 42], [146, 128, 42], [147, 128, 43], [148, 129, 43], 
+                  [149, 129, 44], [150, 129, 44], [151, 130, 45], [152, 130, 45], [153, 130, 45], [154, 131, 46], 
+                  [155, 131, 46], [156, 131, 47], [157, 132, 47], [158, 132, 48], [159, 132, 48], [160, 133, 49], 
+                  [161, 133, 49], [162, 133, 50], [163, 134, 50], [164, 134, 50], [165, 134, 51], [166, 135, 51], 
+                  [167, 135, 52], [168, 135, 52], [169, 136, 53], [170, 136, 53], [171, 136, 54], [172, 137, 54], 
+                  [173, 137, 54], [174, 137, 55], [175, 138, 55], [176, 138, 56], [177, 138, 56], [178, 139, 57], 
+                  [179, 139, 57], [180, 139, 58], [181, 140, 58], [182, 140, 58], [183, 140, 59], [184, 141, 59], 
+                  [185, 142, 62], [186, 144, 65], [187, 146, 68], [188, 147, 71], [189, 149, 74], [190, 151, 77], 
+                  [192, 153, 80], [193, 155, 83], [194, 156, 86], [195, 158, 90], [196, 160, 93], [197, 162, 96], 
+                  [198, 164, 99], [199, 165, 102], [201, 167, 105], [202, 169, 108], [203, 171, 111], 
+                  [204, 173, 114], [205, 174, 117], [206, 176, 120], [207, 178, 123], [208, 180, 126], 
+                  [210, 182, 130], [211, 184, 133], [212, 185, 136], [213, 187, 139], [214, 189, 142], 
+                  [215, 191, 145], [216, 193, 148], [217, 194, 151], [219, 196, 154], [220, 198, 157], 
+                  [221, 200, 160], [222, 202, 163], [223, 203, 166], [224, 205, 170], [225, 207, 173], 
+                  [226, 209, 176], [228, 211, 179], [229, 212, 182], [230, 214, 185], [231, 216, 188], 
+                  [232, 218, 191], [233, 220, 194], [234, 221, 197], [235, 223, 200], [237, 225, 203], 
+                  [238, 227, 207], [239, 229, 210], [240, 230, 213], [241, 232, 216], [242, 234, 219], 
+                  [243, 236, 222], [245, 238, 225], [246, 240, 228], [247, 241, 231], [248, 243, 234], 
+                  [249, 245, 237], [250, 247, 240], [251, 249, 243], [252, 250, 247], [254, 252, 250], 
+                  [255, 254, 253], [255, 255, 255]])
+
+    cm = mpl.colors.ListedColormap(C/255.)
+    return cm
+
+
+def cm_terrain_50():
+    """
+     Custom terrain colormap with 50 distinct colors
+    """
+    C = np.array([
+        [2, 97, 0], [6, 98, 0], [11, 98, 0], [16, 99, 0], [20, 100, 0], [25, 101, 0], 
+        [30, 102, 0], [34, 103, 0], [39, 104, 0], [44, 105, 0], [48, 106, 0], 
+        [53, 107, 0], [58, 108, 0], [63, 109, 2], [68, 110, 4], [73, 111, 7], 
+        [78, 112, 9], [83, 113, 12], [88, 114, 15], [93, 115, 17], [98, 116, 20], 
+        [103, 116, 22], [109, 117, 25], [114, 118, 27], [119, 119, 30], 
+        [124, 121, 32], [129, 122, 34], [134, 124, 37], [139, 126, 39], 
+        [144, 127, 41], [149, 129, 44], [155, 131, 46], [160, 133, 48], 
+        [165, 134, 51], [170, 136, 53], [175, 138, 55], [180, 139, 58], 
+        [185, 143, 64], [191, 152, 80], [197, 162, 96], [203, 171, 112], 
+        [209, 181, 128], [215, 190, 144], [221, 199, 160], [226, 209, 176], 
+        [232, 218, 192], [238, 228, 208], [244, 237, 224], [250, 246, 240], 
+        [255, 255, 255]])
+
+    cm = mpl.colors.ListedColormap(C/255.)
+    return cm
+
+
+def cm_reflect_ncdc():
+    """NCAR Reflectivity Colormap
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/reflectivity_colormap.py
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    reflect_ncdc_cdict = {
+        'red':(
+            (0.0000, 0.000, 0.000), (0.0714, 0.000, 0.000), (0.1429, 0.000, 0.000), 
+            (0.2143, 0.000, 0.000), (0.2857, 0.000, 0.000), (0.3571, 0.000, 0.000), 
+            (0.4286, 1.000, 1.000), (0.5000, 0.906, 0.906), (0.5714, 1.000, 1.000), 
+            (0.6429, 1.000, 1.000), (0.7143, 0.839, 0.839), (0.7857, 0.753, 0.753), 
+            (0.8571, 1.000, 1.000), (0.9286, 0.600, 0.600), (1.000, 0.923, 0.923)),
+        'green':(
+            (0.0000, 0.925, 0.925), (0.0714, 0.627, 0.627), (0.1429, 0.000, 0.000), 
+            (0.2143, 1.000, 1.000), (0.2857, 0.784, 0.784), (0.3571, 0.565, 0.565), 
+            (0.4286, 1.000, 1.000), (0.5000, 0.753, 0.753), (0.5714, 0.565, 0.565), 
+            (0.6429, 0.000, 0.000), (0.7143, 0.000, 0.000), (0.7857, 0.000, 0.000), 
+            (0.8571, 0.000, 0.000), (0.9286, 0.333, 0.333), (1.000, 0.923, 0.923)),
+        'blue':(
+            (0.0000, 0.925, 0.925), (0.0714, 0.965, 0.965), (0.1429, 0.965, 0.965), 
+            (0.2143, 0.000, 0.000), (0.2857, 0.000, 0.000), (0.3571, 0.000, 0.000), 
+            (0.4286, 0.000, 0.000), (0.5000, 0.000, 0.000), (0.5714, 0.000, 0.000), 
+            (0.6429, 0.000, 0.000), (0.7143, 0.000, 0.000), (0.7857, 0.000, 0.000), 
+            (0.8571, 1.000, 1.000), (0.9286, 0.788, 0.788), (1.000, 0.923, 0.923))}
+
+    reflect_ncdc_coltbl = mpl.colors.LinearSegmentedColormap(
+        'REFLECT_NCDC_COLTBL', reflect_ncdc_cdict)
+    
+    return reflect_ncdc_coltbl
+
+
+def cm_LU_MODIS21():
+    """Land use colormap (includes lake category).
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/landuse_colormap.py
+
+      # MUST SET VMAX AND VMIN LIKE THIS TO SCALE COLOR RANGE CORRECTLY
+      cm, labels = LU_MODIS21()
+      plt.pcolormesh(LU_INDEX, cmap=cm, vmin=1, vmax=len(labels) + 1)
+    """
+
+    C = np.array([[0, .4, 0],           # 1 Evergreen Needleleaf Forest
+                  [0, .4, .2],          # 2 Evergreen Broadleaf Forest
+                  [.2, .8, .2],         # 3 Deciduous Needleleaf Forest
+                  [.2, .8, .4],         # 4 Deciduous Broadleaf Forest
+                  [.2, .6, .2],         # 5 Mixed Forests
+                  [.3, .7, 0],          # 6 Closed Shrublands
+                  [.82, .41, .12],      # 7 Open Shurblands
+                  [.74, .71, .41],      # 8 Woody Savannas
+                  [1, .84, .0],         # 9 Savannas
+                  [0, 1, 0],            # 10 Grasslands
+                  [0, 1, 1],            # 11 Permanant Wetlands
+                  [1, 1, 0],            # 12 Croplands
+                  [1, 0, 0],            # 13 Urban and Built-up
+                  [.7, .9, .3],         # 14 Cropland/Natural Vegetation Mosaic
+                  [1, 1, 1],            # 15 Snow and Ice
+                  [.914, .914, .7],     # 16 Barren or Sparsely Vegetated
+                  [.5, .7, 1],          # 17 Water (like oceans)
+                  [1, 0, .74],          # 18 Wooded Tundra
+                  [.97, .5, .31],       # 19 Mixed Tundra
+                  [.91, .59, .48],      # 20 Barren Tundra
+                  [0, 0, .88]           # 21 Lake
+                 ])
+
+    cm = mpl.colors.ListedColormap(C)
+
+    labels = ['Evergreen Needleleaf Forest',
+              'Evergreen Broadleaf Forest',
+              'Deciduous Needleleaf Forest',
+              'Deciduous Broadleaf Forest',
+              'Mixed Forests',
+              'Closed Shrublands',
+              'Open Shrublands',
+              'Woody Savannas',
+              'Savannas',
+              'Grasslands',
+              'Permanent Wetlands',
+              'Croplands',
+              'Urban and Built-Up',
+              'Cropland/Natural Vegetation Mosaic',
+              'Snow and Ice',
+              'Barren or Sparsely Vegetated',
+              'Water',
+              'Wooded Tundra',
+              'Mixed Tundra',
+              'Barren Tundra',
+              'Lake']
+
+    return cm, labels
+
+
+def cm_LU_MODIS20():
+    """Land use colormap.
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/landuse_colormap.py
+
+      # MUST SET VMAX AND VMIN LIKE THIS TO SCALE COLOR RANGE CORRECTLY
+      cm, labels = LU_MODIS21()
+      plt.pcolormesh(LU_INDEX, cmap=cm, vmin=1, vmax=len(labels) + 1)
+    """
+
+    C = np.array([[0, .4, 0],       # 1 Evergreen Needleleaf Forest
+                  [0, .4, .2],      # 2 Evergreen Broadleaf Forest
+                  [.2, .8, .2],     # 3 Deciduous Needleleaf Forest
+                  [.2, .8, .4],     # 4 Deciduous Broadleaf Forest
+                  [.2, .6, .2],     # 5 Mixed Forests
+                  [.3, .7, 0],      # 6 Closed Shrublands
+                  [.82, .41, .12],  # 7 Open Shurblands
+                  [.74, .71, .41],  # 8 Woody Savannas
+                  [1, .84, .0],     # 9 Savannas
+                  [0, 1, 0],        # 10 Grasslands
+                  [0, 1, 1],        # 11 Permanant Wetlands
+                  [1, 1, 0],        # 12 Croplands
+                  [1, 0, 0],        # 13 Urban and Built-up
+                  [.7, .9, .3],     # 14 Cropland/Natual Vegation Mosaic
+                  [1, 1, 1],        # 15 Snow and Ice
+                  [.914, .914, .7], # 16 Barren or Sparsely Vegetated
+                  [0, 0, .88],      # 17 Water
+                  [.86, .08, .23],  # 18 Wooded Tundra
+                  [.97, .5, .31],   # 19 Mixed Tundra
+                  [.91, .59, .48]   # 20 Barren Tundra
+                 ])
+
+    cm = mpl.colors.ListedColormap(C)
+
+    labels = ['Evergreen Needleleaf Forest',
+              'Evergreen Broadleaf Forest',
+              'Deciduous Needleleaf Forest',
+              'Deciduous Broadleaf Forest',
+              'Mixed Forests',
+              'Closed Shrublands',
+              'Open Shrublands',
+              'Woody Savannas',
+              'Savannas',
+              'Grasslands',
+              'Permanent Wetlands',
+              'Croplands',
+              'Urban and Built-Up',
+              'Cropland/Natural Vegetation Mosaic',
+              'Snow and Ice',
+              'Barren or Sparsely Vegetated',
+              'Water',
+              'Wooded Tundra',
+              'Mixed Tundra',
+              'Barren Tundra']
+
+    return cm, labels
+
+
+def cm_LU_USGS24():
+    """Land use colormap.
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/landuse_colormap.py
+
+      # MUST SET VMAX AND VMIN LIKE THIS TO SCALE COLOR RANGE CORRECTLY
+      cm, labels = LU_MODIS21()
+      plt.pcolormesh(LU_INDEX, cmap=cm, vmin=1, vmax=len(labels) + 1)
+    """
+
+    C = np.array([[1, 0, 0],  # 1 Urban and Built-up Land
+                  [1, 1, 0],  # 2 Dryland Cropland and Pasture
+                  [1, 1, .2],  # 3 Irrigated Cropland and Pasture
+                  [1, 1, .3],  # 4 Mixed Dryland/Irrigated Cropland and Pasture
+                  [.7, .9, .3],  # 5 Cropland/Grassland Mosaic
+                  [.7, .9, .3],  # 6 Cropland/Woodland Mosaic
+                  [0, 1, 0],  # 7 Grassland
+                  [.3, .7, 0],  # 8 Shrubland
+                  [.82, .41, .12],  # 9 Mixed Shrubland/Grassland
+                  [1, .84, .0],  # 10 Savanna
+                  [.2, .8, .4],  # 11 Deciduous Broadleaf Forest
+                  [.2, .8, .2],  # 12 Deciduous Needleleaf Forest
+                  [0, .4, .2],  # 13 Evergreen Broadleaf Forest
+                  [0, .4, 0],  # 14 Evergreen Needleleaf Forest
+                  [.2, .6, .2],  # 15 Mixed Forests
+                  [0, 0, .88],  # 16 Water Bodies
+                  [0, 1, 1],  # 17 Herbaceous Wetlands
+                  [.2, 1, 1],  # 18 Wooden Wetlands
+                  [.914, .914, .7],  # 19 Barren or Sparsely Vegetated
+                  [.86, .08, .23],  # 20 Herbaceous Tundraa
+                  [.86, .08, .23],  # 21 Wooded Tundra
+                  [.97, .5, .31],  # 22 Mixed Tundra
+                  [.91, .59, .48],  # 23 Barren Tundra
+                  [1, 1, 1]])  # 24 Snow and Ice
+
+    cm = mpl.colors.ListedColormap(C)
+
+    labels = ['Urban and Built-up Land',
+              'Dryland Cropland and Pasture',
+              'Irrigated Cropland and Pasture',
+              'Mixed Dryland/Irrigated Cropland and Pasture',
+              'Cropland/Grassland Mosaic',
+              'Cropland/Woodland Mosaic',
+              'Grassland',
+              'Shrubland',
+              'Mixed Shrubland/Grassland',
+              'Savanna',
+              'Deciduous Broadleaf Forest',
+              'Deciduous Needleleaf Forest',
+              'Evergreen Broadleaf',
+              'Evergreen Needleleaf',
+              'Mixed Forest',
+              'Water Bodies',
+              'Herbaceous Wetland',
+              'Wooden Wetland',
+              'Barren or Sparsely Vegetated',
+              'Herbaceous Tundra',
+              'Wooded Tundra',
+              'Mixed Tundra',
+              'Bare Ground Tundra',
+              'Snow or Ice']
+
+    return cm, labels
+
+
+def cm_LU_NLCD_chris():
+    """Land use colormap.
+    https://github.com/blaylockbk/pyBKB_v2/blob/master/BB_cmap/landuse_colormap.py
+
+      # MUST SET VMAX AND VMIN LIKE THIS TO SCALE COLOR RANGE CORRECTLY
+      cm, labels = LU_MODIS21()
+      plt.pcolormesh(LU_INDEX, cmap=cm, vmin=1, vmax=len(labels) + 1)
+    """
+
+    # Provided by Chris Foster
+    C = np.array([[0.0, 0.0, 1.0],
+                  [0.0, 1.0, 1.0],
+                  [0.3, 0.3, 0.3],
+                  [0.4, 0.4, 0.4],
+                  [0.5, 0.5, 0.5],
+                  [0.6, 0.6, 0.6],
+                  [0.0, 0.4, 0.2],
+                  [0.2, 0.6, 0.2],
+                  [0.3, 0.7, 0.0],
+                  [0.8, 1.0, 0.2],
+                  [0.0, 1.0, 0.0],
+                  [0.8, 0.4, 0.2],
+                  [0.6, 0.4, 0.0]])
+
+    cm = mpl.colors.ListedColormap(C)
+
+    labels = ['Water',
+              'Wetland',
+              'Developed High Intensity',
+              'Developed Medium Intensity',
+              'Developed Low Intensity',
+              'Developed Open Space',
+              'Evergreen Forest',
+              'Deciduous Forest',
+              'Cultivated Crops',
+              'Pasture/Hay',
+              'Grassland',
+              'Shrubland',
+              'Barren Land']
+
+    return cm, labels
+
+
+def cm_ir_enhancement():
+    """for the AWIPS IR enhancement
+    This is assuming that the data you are plotting are actual brightness temps,
+    not indexed 0-255 like the old GOES products.
+
+    :Example:
+    im = ax.imshow(a[:], extent=(xa[0],xa[-1],ya[-1],ya[0]), origin='upper', cmap=my_cmap, vmin=162., vmax=330.0)
+    """
+
+    cdict = {
+        'red':  ((0.0, 0.1, 0.1),
+                 (.052, 0.07, 0.07),
+                 (.055, 0.004, 0.004),
+                 (.113, 0.004, 0.004),
+                 (.116, 0.85, 0.85),
+                 (.162, 0.02, 0.2),
+                 (0.165, 0.0, 0.0),
+                 (0.229, 0.047, 0.047),
+                 (0.232, 0.0, 0.0),
+                 (0.297, 0.0, 0.0),
+                 (0.30, 0.55, 0.55),
+                 (0.355, 0.95, 0.95),
+                 (0.358, 0.93, 0.93),
+                 (0.416, 0.565, 0.565),
+                 (0.419, .373, .373),
+                 (0.483, 0.97, 0.97),
+                 (0.485, 0.98, 0.98),
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (.052, 0.0, 0.0),
+                   (.055, 0.0, 0.0),
+                   (.113, 0.0, 0.0),
+                   (.116, 0.85, 0.85),
+                   (.162, 0.0, 0.0),
+                   (0.165, .435, .435),
+                   (0.229, .97, .97),
+                   (0.232, 0.37, 0.37),
+                   (0.297, 0.78, 0.78),
+                   (0.30, 0.0, 0.0),
+                   (0.355, 0.0, 0.0),
+                   (0.358, 0.0, 0.0),
+                   (0.416, 0.0, 0.0),
+                   (0.419, .357, .357),
+                   (0.483, 0.95, 0.95),
+                   (0.485, 0.98, 0.98),
+                   (1.0, 0.0, 0.0)),
+         'blue': ((0.0, 0.04, 0.04),
+                  (.052, 0.467, 0.467),
+                  (.055, 0.4, 0.4),
+                  (.113, 0.97, 0.97),
+                  (.116, 0.85, 0.85),
+                  (.162, 0.0, 0.0),
+                  (0.165, 0.0, 0.0),
+                  (0.229, 0.0, 0.0),
+                  (0.232,0.816, 0.816),
+                  (0.297, 0.565, 0.565),
+                  (0.30, .55, .55),
+                  (0.355, .97, .97),
+                  (0.358, 0.0, 0.0),
+                  (0.416, 0., 0.),
+                  (0.419, 0., 0.),
+                  (0.483, 0., 0.),
+                  (0.486, 0.98, 0.98),
+                  (1.0, 0.0, 0.0))}
+
+    cmap = mpl.colors.LinearSegmentedColormap('IR_enhancement', cdict)
+    return cmap
+
+
+def cm_ir_enhancement1():
+    """for the McIDAS IR enhancement
+    This is assuming that the data you are plotting are actual brightness temps,
+    not indexed 0-255 like the old GOES products.
+    
+    :Example:
+    im = ax.imshow(a[:], extent=(xa[0],xa[-1],ya[-1],ya[0]), origin='upper', cmap=my_cmap, vmin=162., vmax=330.0)
+    """
+
+    cdict  = {
+        'red': ((0.0, 0.0, 0.0),
+                 (.001, 1.00, 1.00),
+                 (.107, 1.00, 1.00),
+                 (.113, 0.498, 0.498),
+                 (.173, 1.00, 1.00),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.902, 0.902),
+                 (.293, 1.00, 1.00),
+                 (.346, 1.00, 1.00),
+                 (.352, 1.00, 1.00),
+                 (.406, 0.101, 0.101),
+                 (.412, 0.00, 0.00),
+                 (.481, 0.00, 0.00),
+                 (.484, 0.00, 0.00),
+                 (.543, 0.00, 0.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                 (.001, 1.00, 1.00),
+                 (.107, 1.00, 1.00),
+                 (.113, 0.00, 0.00),
+                 (.173, 0.498, 0.498),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.00, 0.00),
+                 (.293, 0.00, 0.00),
+                 (.346, 0.902, 0.902),
+                 (.352, 1.00, 1.00),
+                 (.406, 1.00, 1.00),
+                 (.412, 1.00, 1.00),
+                 (.481, 0.00, 0.00),
+                 (.484, 0.00, 0.00),
+                 (.543, 1.00, 1.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                   (1.0, 0.0, 0.0)),
+         'blue': ((0.0, 0.00, 0.00),
+                 (.001, 1.00, 1.00),
+                 (.107, 0.00, 0.00),
+                 (.113, 0.498, 0.498),
+                 (.173, 0.786, 0.786),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.00, 0.00),
+                 (.293, 0.00, 0.00),
+                 (.346, 0.00, 0.00),
+                 (.352, 0.00, 0.00),
+                 (.406, 0.00, 0.00),
+                 (.412, 0.00, 0.00),
+                 (.481, 0.451, 0.451),
+                 (.484, 0.451, 0.451),
+                 (.543, 1.00, 1.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                  (1.0, 0.0, 0.0))}
+
+    cmap = mpl.colors.LinearSegmentedColormap('IR_enhancement', cdict)
+    return cmap
+
+
+def cm_ir_enhancement2():
+    """for the Shortwave IR enhancement
+    This is assuming that the data you are plotting are actual brightness temps,
+    not indexed 0-255 like the old GOES products.
+    
+    :Example:
+    im = ax.imshow(a[:], extent=(xa[0],xa[-1],ya[-1],ya[0]), origin='upper', cmap=my_cmap, vmin=162., vmax=330.0)
+    """
+
+    cdict  = {
+        'red': ((0.0, 0.0, 0.0),
+                 (.001, 1.00, 1.00),
+                 (.107, 1.00, 1.00),
+                 (.113, 0.498, 0.498),
+                 (.173, 1.00, 1.00),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.902, 0.902),
+                 (.293, 1.00, 1.00),
+                 (.346, 1.00, 1.00),
+                 (.352, 1.00, 1.00),
+                 (.406, 0.101, 0.101),
+                 (.412, 0.00, 0.00),
+                 (.481, 0.00, 0.00),
+                 (.484, 0.00, 0.00),
+                 (.543, 0.00, 0.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                 (.001, 1.00, 1.00),
+                 (.107, 1.00, 1.00),
+                 (.113, 0.00, 0.00),
+                 (.173, 0.498, 0.498),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.00, 0.00),
+                 (.293, 0.00, 0.00),
+                 (.346, 0.902, 0.902),
+                 (.352, 1.00, 1.00),
+                 (.406, 1.00, 1.00),
+                 (.412, 1.00, 1.00),
+                 (.481, 0.00, 0.00),
+                 (.484, 0.00, 0.00),
+                 (.543, 1.00, 1.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                   (1.0, 0.0, 0.0)),
+         'blue': ((0.0, 0.00, 0.00),
+                 (.001, 1.00, 1.00),
+                 (.107, 0.00, 0.00),
+                 (.113, 0.498, 0.498),
+                 (.173, 0.786, 0.786),
+                 (.179, 0.902, 0.902),
+                 (.227, 0.102, 0.102),
+                 (.233, 0.00, 0.00),
+                 (.287, 0.00, 0.00),
+                 (.293, 0.00, 0.00),
+                 (.346, 0.00, 0.00),
+                 (.352, 0.00, 0.00),
+                 (.406, 0.00, 0.00),
+                 (.412, 0.00, 0.00),
+                 (.481, 0.451, 0.451),
+                 (.484, 0.451, 0.451),
+                 (.543, 1.00, 1.00),
+                 (.546, 0.773, 0.773),
+                 (.994, 0.012, 0.012),
+                 (.997, 0.004, 0.004),
+                  (1.0, 0.0, 0.0))}
+
+    cmap = mpl.colors.LinearSegmentedColormap('IR_enhancement', cdict)
+    return cmap
+
+
+def cm_wv_enhancement():
+    """for the Water Vapor channels enhancement
+    This is assuming that the data you are plotting are actual brightness temps,
+    not indexed 0-255 like the old GOES products.
+    
+    :Example:
+    im = ax.imshow(a[:], extent=(xa[0],xa[-1],ya[-1],ya[0]), origin='upper', cmap=my_cmap, vmin=162., vmax=330.0)
+    """
+
+    cdict  = {
+        'red': ((0.0, 0.0, 0.0),
+                 (0.290, 0.263, .263),
+                 (0.385, 1.0, 1.0),
+                 (0.475, 0.443, .443),
+                 (0.515, 0.0, 0.0),
+                 (0.575, 1.0, 1.0),
+                 (0.664, 1.0, 1.0),
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (0.290, .513, .513),
+                   (0.385, 1.0, 1.0),
+                   (0.475, .443, .443),
+                   (0.515, 0., 0.0),
+                   (0.575, 1.0, 1.0),
+                   (0.664, 0.0, 0.0),
+                   (1.0, 0.0, 0.0)),
+         'blue': ((0.0, 0.0, 0.0),
+                  (0.290, .137, .137),
+                  (0.385, 1.0, 1.0),
+                  (0.475,0.694, 0.694),
+                  (0.515, .451, .451),
+                  (0.552, 0.0, 0.0),
+                  (0.664, 0.0, 0.0),
+                  (1.0, 0.0, 0.0))}
+
+    cmap = mpl.colors.LinearSegmentedColormap('WV_enhancement', cdict)
+    return cmap
