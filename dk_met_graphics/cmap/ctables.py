@@ -77,14 +77,14 @@ def cm_rain_nws(atime=24, pos=None):
     _colors = np.array(_colors)/255.0
     if pos is None:
         if atime == 24:
-            _pos = [0.1, 10, 25, 50, 100, 250]
+            _pos = [0.1, 10, 25, 50, 100, 250, 800]
         elif atime == 6:
-            _pos = [0.1, 4, 13, 25, 60, 120]
+            _pos = [0.1, 4, 13, 25, 60, 120, 800]
         else:
-            _pos = [0.1, 2, 7, 13, 30, 60]
+            _pos = [0.01, 2, 7, 13, 30, 60, 800]
     else:
         _pos = pos
-    cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='max')
+    cmap, norm = mpl.colors.from_levels_and_colors(_pos, _colors, extend='neither')
     return cmap, norm
 
 
